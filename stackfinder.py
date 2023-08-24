@@ -18,7 +18,7 @@ def main():
     output_dir = ""
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", help="directory for input files (defaults current dir)", default=os.getcwd())
+    parser.add_argument("-i", "--input", help="directory for input files (defaults current dir)", required=True)
     parser.add_argument("-o", "--output", help="directory for output stacks (defaults to input directory)")
     parser.add_argument("--disable-cache", help="do not write or read cached metadata", action="store_true")
     args = parser.parse_args()
