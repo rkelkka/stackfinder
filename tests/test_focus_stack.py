@@ -2,14 +2,9 @@ import focus_stack
 import unittest
 import os
 import json
-from datetime import timedelta
+import configparser
 
 TESTDATA_FILENAME = os.path.join(os.path.dirname(__file__), 'test_metadata.json')
-FOCUS_STACK = {
-    "TIMESTAMP_THRESHOLD": timedelta(seconds=0.5),
-    "CONTINUOUS_DRIVE": 0,
-    "MIN_STACK_SIZE": 2,
-}
 
 EXPECTED_STACKS = [
     "2023-08-13_18-09-33.33__IMG_8783-IMG_8882__100",
@@ -21,12 +16,17 @@ EXPECTED_STACKS = [
     "2023-08-13_18-20-14.00__IMG_9137-IMG_9146__010"
 ]
 
-class TestAdd(unittest.TestCase):
+class TestFocusStack(unittest.TestCase):
 
     def setUp(self):
         self.testfile = open(TESTDATA_FILENAME)
         self.testdata = json.load(self.testfile)
-        self.testconfig = FOCUS_STACK
+        self.testconfig = configparser.ConfigParser()
+        self.testconfig['FOCUS_STACK'] = {
+               'timestamp_threshold_sec': '0.5',
+               'continuous_drive': '0',
+               'min_stack_size': '2'
+        }
 
     def tearDown(self):
         self.testfile.close()

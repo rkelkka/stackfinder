@@ -33,8 +33,10 @@ def main():
     logger.debug("Using input dir: %s", input_dir)
     logger.debug("Using output dir: %s", output_dir)
 
-    file_list = get_file_list(input_dir, config.FILE_EXTS)
-    logger.info("Found %s %s files in %s", len(file_list), config.FILE_EXTS, input_dir)
+    conf = config.read()
+
+    file_list = get_file_list(input_dir, conf["IO"]["file_extensions"])
+    logger.info("Found %s %s files in %s", len(file_list), conf["IO"]["file_extensions"], input_dir)
     if (len(file_list) == 0):
         logger.warning("No input files found in %s. Exiting.", input_dir)
         sys.exit()
@@ -46,7 +48,7 @@ def main():
     else:
         metadatas = with_cache(file_list, read_metadatas)
 
-    stacks = focus_stack.search(metadatas, config.FOCUS_STACK)
+    stacks = focus_stack.search(metadatas, conf)
     logger.info("Found %s stacks:\n> %s", len(stacks), "\n> ".join([focus_stack.get_stack_label(s) for s in stacks]))
     for s in stacks:
         consistent_evs = focus_stack.verify_consistent_ev(s)

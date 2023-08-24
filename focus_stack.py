@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 import logging
 from cr3_exif import get_date, get_file_name, get_drive_mode, get_ev
 logger = logging.getLogger('main')
@@ -65,14 +66,18 @@ def get_stack_label(stack):
 def verify_consistent_ev(stack):
     return all(ev == get_ev(stack[0]) for ev in list(map(get_ev, stack)))
 
-def search(metadatas, config):
+def search(metadatas, conf):
     logger.debug("Begin search_stacks, count %s", len(metadatas))
-    stacks = _split_by_time_threshold(metadatas, config["TIMESTAMP_THRESHOLD"])
+    threshold = timedelta(seconds=float(conf["FOCUS_STACK"]["timestamp_threshold_sec"]))
+    min_stack_size = int(conf["FOCUS_STACK"]["min_stack_size"])
+    continuous_drive = int(conf["FOCUS_STACK"]["continuous_drive"])
+
+    stacks = _split_by_time_threshold(metadatas, threshold)
     logger.debug("Found %s potential stacks", len(stacks))
 
-    stacks = [s for s in stacks if len(s) >= config["MIN_STACK_SIZE"]]
-    logger.debug("  with at least %s images: %s", config["MIN_STACK_SIZE"], len(stacks))
+    stacks = [s for s in stacks if len(s) >= min_stack_size]
+    logger.debug("  with at least %s images: %s", min_stack_size, len(stacks))
 
-    stacks = [s for s in stacks if all(dm == config["CONTINUOUS_DRIVE"] for dm in list(map(get_drive_mode, s)))]
+    stacks = [s for s in stacks if all(dm == continuous_drive for dm in list(map(get_drive_mode, s)))]
     logger.debug("  with single drive mode: %s", len(stacks))
     return stacks

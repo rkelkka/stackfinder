@@ -1,9 +1,13 @@
 
-from datetime import timedelta
+import configparser
 
-FILE_EXTS = ['.cr3']
-FOCUS_STACK = {
-    "TIMESTAMP_THRESHOLD": timedelta(seconds=0.5),
-    "CONTINUOUS_DRIVE": 0,
-    "MIN_STACK_SIZE": 2,
-}
+CONFIG_FILE = "config.ini"
+
+def read():
+    config = configparser.ConfigParser(allow_no_value = True)
+    config.read(CONFIG_FILE)
+    return config
+
+def write(config):
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
