@@ -6,4 +6,5 @@ Based on
  
 Requirements
  - pip install pyexiftool
- - ExifTool.exe placed on working directory (or repo dir, not sure how PyExifTool attempts to locate it..)
+ - ExifTool placed on working directory or PATH
+ - Python 3.5+
