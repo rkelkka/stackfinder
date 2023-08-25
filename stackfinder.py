@@ -8,14 +8,14 @@ from io_util import get_file_list, copy_stack
 from cache import with_cache
 from pyexif_wrapper import read_metadatas
 from cr3_exif import get_file_name
-from gooey import Gooey
+#from gooey import Gooey
 
 FORMAT = '[%(asctime)s.%(msecs)03d] %(levelname)8s - %(message)s'
 logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
-@Gooey
+#@Gooey
 def main():
     input_dir = ""
     output_dir = ""
