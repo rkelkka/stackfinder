@@ -8,3 +8,10 @@ Requirements
  - pip install pyexiftool
  - ExifTool placed on working directory or PATH
  - Python 3.5+
+ - GUI (on github codespace):
+   ```
+   sudo apt update && sudo apt install libgtk-3-dev
+   pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
+   pip install Gooey
+   ```
+   - here wxpython is installed from pre-compiled package
