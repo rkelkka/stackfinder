@@ -66,11 +66,11 @@ def get_stack_label(stack):
 def verify_consistent_ev(stack):
     return all(ev == get_ev(stack[0]) for ev in list(map(get_ev, stack)))
 
-def search(metadatas, conf):
+def search(metadatas, threshold_sec, continuous_drive, min_stack_size):
     logger.debug("Begin search_stacks, count %s", len(metadatas))
-    threshold = timedelta(seconds=float(conf["FOCUS_STACK"]["timestamp_threshold_sec"]))
-    min_stack_size = int(conf["FOCUS_STACK"]["min_stack_size"])
-    continuous_drive = int(conf["FOCUS_STACK"]["continuous_drive"])
+    threshold = timedelta(seconds=float(threshold_sec))
+    min_stack_size = int(min_stack_size)
+    continuous_drive = int(continuous_drive)
 
     stacks = _split_by_time_threshold(metadatas, threshold)
     logger.debug("Found %s potential stacks", len(stacks))
@@ -79,5 +79,5 @@ def search(metadatas, conf):
     logger.debug("  with at least %s images: %s", min_stack_size, len(stacks))
 
     stacks = [s for s in stacks if all(dm == continuous_drive for dm in list(map(get_drive_mode, s)))]
-    logger.debug("  with single drive mode: %s", len(stacks))
+    logger.debug("  with '%s' drive mode: %s", continuous_drive, len(stacks))
     return stacks
