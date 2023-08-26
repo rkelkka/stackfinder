@@ -6,4 +6,3 @@ TODO
 - test that it survives other bracketed images (exposure, flash..) and other high speed bursts
 - consider OOP and actual data structures
 - installer (windows exe). Gooey? pyinstaller?
-- replace custom path separators with os.path.join

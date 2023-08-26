@@ -16,7 +16,7 @@ def _digest(list):
     return list_hash.hexdigest()
 
 def _get_cache_file_path(input_files):
-    return CACHE_DIR_REL_TO_WD + "/" + _digest(input_files) + ".json"
+    return os.path.join(CACHE_DIR_REL_TO_WD, _digest(input_files) + ".json")
 
 def _write(path, data):
     logger.info("Writing cached metadata: %s", path)

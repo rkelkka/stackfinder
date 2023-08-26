@@ -15,7 +15,7 @@ def get_file_list(input_dir, file_extensions):
 
 def copy_stack(stack, get_file_path_from_stack_item_fn, get_stack_label_fn, dest_base_dir, include_xmp_sidecars, dry_run):
     stack_label = get_stack_label_fn(stack)
-    stack_output_root = dest_base_dir + "/" + stack_label
+    stack_output_root = os.path.join(dest_base_dir, stack_label)
     input_files = [get_file_path_from_stack_item_fn(img) for img in stack]
     if include_xmp_sidecars:
         xmp_files = [with_xmp_extension(f) for f in input_files]
