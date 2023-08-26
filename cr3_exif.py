@@ -14,6 +14,8 @@ def get_file_name(metadata):
 # Bracketed images have single drive mode (0)
 # This can be used to differentiate bracketed shots
 # from other high speed bursts.
+# Refer to "ContinuousDrive" in https://www.exiftool.org/TagNames/Canon.html
+# Canon R6 focus bracketing utility uses single drive mode which value is 0
 SINGLE_DRIVE_MODE = 0
 def get_drive_mode(metadata):
     return metadata["MakerNotes:ContinuousDrive"]

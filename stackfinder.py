@@ -43,6 +43,7 @@ def main():
 
     input_files = get_file_list(input_dir, args.filetypes)
     logger.info("Found %s %s files in %s", len(input_files), args.filetypes, input_dir)
+    logger.debug(" > %s", input_files)
     if (len(input_files) == 0):
         logger.warning("No input files found in %s. Exiting.", input_dir)
         sys.exit()

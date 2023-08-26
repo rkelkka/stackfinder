@@ -11,7 +11,8 @@ def _absolute_file_paths(directory):
 
 def get_file_list(input_dir, file_extensions):
     file_list = _absolute_file_paths(input_dir)
-    return [f for f in file_list if os.path.isfile(f) if os.path.splitext(f)[1].lower() in file_extensions]
+    logger.debug("file_list: %s", file_list)
+    return  [f for f in file_list if f.lower().endswith(tuple(file_extensions))]
 
 def copy_stack(stack, get_file_path_from_stack_item_fn, get_stack_label_fn, dest_base_dir, include_xmp_sidecars, dry_run):
     stack_label = get_stack_label_fn(stack)
@@ -32,7 +33,7 @@ def copy_files(files_to_copy, dest_dir, dry_run):
             logger.debug("> Copy file %s to %s", filename, dest_dir)
             shutil.copy(filename, dest_dir)
     else:
-        logger.info("(dry-run) Copy stack to %s", dest_dir)
+        logger.debug("(dry-run) Copy stack to %s", dest_dir)
         for filename in files_to_copy:
             logger.debug("(dry-run) > Copy file %s to %s", filename, dest_dir)
 

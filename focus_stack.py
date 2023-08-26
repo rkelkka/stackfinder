@@ -53,8 +53,8 @@ def _strip_file_ending(fname):
     return fname.rsplit('.', 1)[0]
 
 def get_stack_label(stack):
-    displayble_date_format = "%Y-%m-%d_%H-%M-%S"
-    start_date_str = get_date(stack[0]).strftime(displayble_date_format)[:-4]
+    displayble_date_format = "%Y-%m-%d_%H-%M-%S" # .%f # NOTE remember to adjust the line below if manipulating ormat
+    start_date_str = get_date(stack[0]).strftime(displayble_date_format) # [:-4] # uncommien if adding .%f to date format
     start_img_name = _strip_file_ending(get_file_name(stack[0]))
     end_img_name = _strip_file_ending(get_file_name(stack[-1]))
     stack_size_str = str(len(stack)).zfill(3)
