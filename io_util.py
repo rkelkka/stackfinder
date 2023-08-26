@@ -26,7 +26,7 @@ def copy_stack(stack, get_file_path_from_stack_item_fn, get_stack_label_fn, dest
 
 def copy_files(files_to_copy, dest_dir, dry_run):
     if not dry_run:
-        logger.info("Copy stack to %s", dest_dir)
+        logger.debug("Copy stack to %s", dest_dir)
         Path(dest_dir).mkdir(parents=True, exist_ok=True)
         for filename in files_to_copy:
             logger.debug("> Copy file %s to %s", filename, dest_dir)

@@ -10,9 +10,11 @@ from pyexif_wrapper import read_metadatas, write_tags
 from cr3_exif import get_file_name
 
 FORMAT = '[%(asctime)s.%(msecs)03d] %(levelname)8s - %(message)s'
-logging.basicConfig(format=FORMAT)
+logging.basicConfig(level=logging.INFO, format=FORMAT, handlers=[
+        logging.FileHandler("stackfinder.log"),
+        logging.StreamHandler()
+    ])
 logger = logging.getLogger('main')
-logger.setLevel(logging.DEBUG)
 
 def main():
     input_dir = ""
@@ -63,35 +65,43 @@ def execute(input_files, output_dir, threshold_sec, continuous_drive, min_stack_
         copy_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_dry_run)
 
 def read_files(input_files, flag_disable_cache):
+    logger.info("Reading files...")
     metadatas = []
     if (flag_disable_cache):
         logger.warning("Cache disabled - reading metadatas may take several seconds.")
         metadatas = read_metadatas(input_files)
     else:
         metadatas = with_cache(input_files, read_metadatas)
+    logger.info("Reading files...done")
     return metadatas
 
 def verify_evs(stacks):
+    logger.info("Verify EVs...")
     for s in stacks:
         consistent_evs = focus_stack.verify_consistent_ev(s)
         if (consistent_evs == False):
             logger.warning("*** Stack %s has inconsistent EVs ***", focus_stack.get_stack_label(s))
+    logger.info("Verify EVs...done")
 
 def write_xmp(input_files, stacks, flag_dry_run):
+    logger.info("Writing XMP tags...")
     for s in stacks:
         tags_list = ["-Label=Purple", "-xmp-dc:Title=Focus stack", "-xmp-dc:Description={0}".format(focus_stack.get_stack_label(s))]
         xmp_files = [with_xmp_extension(get_abs_file_path_for_stack_item(input_files, img)) for img in s]
         if not flag_dry_run:
             write_tags(tags_list, xmp_files)
         else :
-            logger.debug("(dry-run) Writing tags %s to files %s", tags_list, xmp_files)
+            logger.debug("(dry-run) Writing tags %s to files %s", tags_list, len(xmp_files))
+    logger.info("Writing XMP tags...done")
 
 def copy_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_dry_run):
+    logger.info("Copy stacks to %s...", output_dir)
     def get_abs_file_path_for_stack_item_internal(metadata) :
         return get_abs_file_path_for_stack_item(input_files, metadata)
 
     for s in stacks:
         copy_stack(s, get_abs_file_path_for_stack_item_internal, focus_stack.get_stack_label, output_dir, include_xmp_sidecars, flag_dry_run)
+    logger.info("Copy stacks...done")
 
 def get_abs_file_path_for_stack_item(input_files, metadata):
         files = [f for f in input_files if get_file_name(metadata) in f]

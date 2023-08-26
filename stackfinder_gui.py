@@ -7,10 +7,7 @@ from gooey import Gooey, GooeyParser
 import config
 from stackfinder import execute
 
-FORMAT = '[%(asctime)s.%(msecs)03d] %(levelname)8s - %(message)s'
-logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('main')
-logger.setLevel(logging.DEBUG)
 
 @Gooey(advanced=True, default_size=(1600, 600))
 def main():

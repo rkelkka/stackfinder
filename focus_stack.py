@@ -20,7 +20,7 @@ def _create_timestamp_threshold_evaluator(threshold):
     return time_threshold_evaluator
 
 def _split_by_time_threshold(metadatas, threshold):
-    logger.debug("Splitting by consecutive shot timestamp threshold of %s", threshold)
+    logger.info("Splitting by consecutive shot timestamp threshold of %s", threshold)
     return _split_by_generic(
         sorted(metadatas, key=lambda metadata: get_date(metadata)),
         [_create_timestamp_threshold_evaluator(threshold)]
@@ -53,7 +53,7 @@ def _strip_file_ending(fname):
     return fname.rsplit('.', 1)[0]
 
 def get_stack_label(stack):
-    displayble_date_format = "%Y-%m-%d_%H-%M-%S.%f"
+    displayble_date_format = "%Y-%m-%d_%H-%M-%S"
     start_date_str = get_date(stack[0]).strftime(displayble_date_format)[:-4]
     start_img_name = _strip_file_ending(get_file_name(stack[0]))
     end_img_name = _strip_file_ending(get_file_name(stack[-1]))
@@ -67,17 +67,17 @@ def verify_consistent_ev(stack):
     return all(ev == get_ev(stack[0]) for ev in list(map(get_ev, stack)))
 
 def search(metadatas, threshold_sec, continuous_drive, min_stack_size):
-    logger.debug("Begin search_stacks, count %s", len(metadatas))
+    logger.info("Begin search_stacks, count %s", len(metadatas))
     threshold = timedelta(seconds=float(threshold_sec))
     min_stack_size = int(min_stack_size)
     continuous_drive = int(continuous_drive)
 
     stacks = _split_by_time_threshold(metadatas, threshold)
-    logger.debug("Found %s potential stacks", len(stacks))
+    logger.info("Found %s potential stacks", len(stacks))
 
     stacks = [s for s in stacks if len(s) >= min_stack_size]
-    logger.debug("  with at least %s images: %s", min_stack_size, len(stacks))
+    logger.info("  with at least %s images: %s", min_stack_size, len(stacks))
 
     stacks = [s for s in stacks if all(dm == continuous_drive for dm in list(map(get_drive_mode, s)))]
-    logger.debug("  with '%s' drive mode: %s", continuous_drive, len(stacks))
+    logger.info("  with '%s' drive mode: %s", continuous_drive, len(stacks))
     return stacks
