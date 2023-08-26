@@ -9,5 +9,5 @@ def read():
     return config
 
 def write(config):
-    with open(CONFIG_FILE, 'w') as configfile:
+    with open(CONFIG_FILE, 'w+') as configfile:
         config.write(configfile)

@@ -8,14 +8,12 @@ from io_util import get_file_list, copy_stack, with_xmp_extension
 from cache import with_cache
 from pyexif_wrapper import read_metadatas, write_tags
 from cr3_exif import get_file_name
-#from gooey import Gooey
 
 FORMAT = '[%(asctime)s.%(msecs)03d] %(levelname)8s - %(message)s'
 logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('main')
 logger.setLevel(logging.DEBUG)
 
-#@Gooey
 def main():
     input_dir = ""
     output_dir = ""
@@ -84,7 +82,6 @@ def write_xmp(input_files, stacks, flag_dry_run):
         tags_list = ["-Label=Purple", "-xmp-dc:Title=Focus stack", "-xmp-dc:Description={0}".format(focus_stack.get_stack_label(s))]
         xmp_files = [with_xmp_extension(get_abs_file_path_for_stack_item(input_files, img)) for img in s]
         if not flag_dry_run:
-            logger.debug("Writing tags %s to files %s", tags_list, xmp_files)
             write_tags(tags_list, xmp_files)
         else :
             logger.debug("(dry-run) Writing tags %s to files %s", tags_list, xmp_files)
