@@ -16,10 +16,11 @@ def main():
     conf = config.read()
 
     input_dir = conf.get("IO", "input_dir", fallback=os.getcwd())
-    # fallback works only if the option is completely missgin, not if it has empty value
+    # fallback works only if the option is completely missing, not if it has empty value
     if not input_dir:
         input_dir = os.getcwd()
-    output_dir = conf.get("IO", "output_dir", fallback=input_dir)
+    # Output dir is intentionally not filled as default to argparser as my default use case is to use input_dir + subdir.
+    #output_dir = conf.get("IO", "output_dir", fallback=os.path.join(input_dir, 'focus_stacks'))
 
     # Convert a string that looks like a list into a real list
     file_extensions = ast.literal_eval(conf.get("IO", "file_extensions", fallback="['.cr3']"))
@@ -34,7 +35,7 @@ def main():
     #Might also use MultiFileChooser with, gooey_options={'wildcard': "Canon RAW (*.cr3)|*.cr3"}
     parser = GooeyParser(description="My Cool GUI Program!")
     parser.add_argument("-i", "--input", metavar="Input dir", required=True, widget="DirChooser", default=input_dir, gooey_options={"default_path": input_dir})
-    parser.add_argument("-o", "--output", metavar="Output dir (defaults to input directory)", widget="DirChooser")
+    parser.add_argument("-o", "--output", metavar="Optional output dir (defaults to input_dir/focus_stacks)", widget="DirChooser")
     parser.add_argument("-t", "--file_extensions", metavar="File extensions", nargs='+', widget="Listbox", default=file_extensions, choices=[".cr3", ".jpg"])
     parser.add_argument("--threshold", metavar="Seconds between consecutive images", default=threshold, widget="DecimalField")
     parser.add_argument("--continuous-drive", metavar="MakerNotes.ContinuousDrive", default=continuous_drive, widget="Dropdown", choices=['0', '1', '2', '3', '4', '5'])
@@ -49,22 +50,13 @@ def main():
         logging.info("  Argument %s: %r", arg, value)
     input_dir = os.path.abspath(args.input)
     if (args.output is None):
-        output_dir = input_dir
+        # Default to input_dir/focus_stacks.
+        output_dir = os.path.join(input_dir, 'focus_stacks')
     else:
+        # However, if output is explicitly selected, use that without any additions.
         output_dir = os.path.abspath(args.output)
-
-    # It was late at night. Maybe default / initial_values for gooey were not working right when returning back to settings.
-    file_extensions = args.file_extensions
-    threshold = args.threshold
-    continuous_drive = args.continuous_drive
-    min_stack_size = args.min_stack_size
-    write_xmp = args.write_xmp
-    copy_stacks = args.copy_stacks
-    disable_cache = args.disable_cache
-    dry_run = args.dry_run
-
-    logger.debug("Using input dir: %s", input_dir)
-    logger.debug("Using output dir: %s", output_dir)
+    logger.info("Using input_dir: %s", input_dir)
+    logger.info("Using output_dir: %s", output_dir)
 
     input_files = get_file_list(input_dir, args.file_extensions)
     logger.info("Found %s %s files in %s", len(input_files), args.file_extensions, input_dir)
@@ -72,18 +64,18 @@ def main():
     if (len(input_files) == 0):
         logger.warning("No input files found in %s", input_dir)
     else:
-        execute(input_files, output_dir, threshold, continuous_drive, min_stack_size, disable_cache, write_xmp, copy_stacks, dry_run)
+        execute(input_files, output_dir, args.threshold, args.continuous_drive, args.min_stack_size, args.disable_cache, args.write_xmp, args.copy_stacks, args.dry_run)
 
     config.set_val(conf, "IO", "input_dir", input_dir)
-    config.set_val(conf, "IO", "output_dir", output_dir)
-    config.set_val(conf, "IO", "file_extensions", file_extensions)
-    config.set_val(conf, "FOCUS_STACK", "timestamp_threshold_sec", threshold)
-    config.set_val(conf, "FOCUS_STACK", "continuous_drive", continuous_drive)
-    config.set_val(conf, "FOCUS_STACK", "min_stack_size", min_stack_size)
-    config.set_val(conf, "IO", "write_xmp", write_xmp)
-    config.set_val(conf, "IO", "copy_stacks", copy_stacks)
-    config.set_val(conf, "IO", "disable_cache", disable_cache)
-    config.set_val(conf, "IO", "dry_run", dry_run)
+    config.set_val(conf, "IO", "output_dir", args.output) # store output_dir only when explicitly supplied
+    config.set_val(conf, "IO", "file_extensions", args.file_extensions)
+    config.set_val(conf, "FOCUS_STACK", "timestamp_threshold_sec", args.threshold)
+    config.set_val(conf, "FOCUS_STACK", "continuous_drive", args.continuous_drive)
+    config.set_val(conf, "FOCUS_STACK", "min_stack_size", args.min_stack_size)
+    config.set_val(conf, "IO", "write_xmp", args.write_xmp)
+    config.set_val(conf, "IO", "copy_stacks", args.copy_stacks)
+    config.set_val(conf, "IO", "disable_cache", args.disable_cache)
+    config.set_val(conf, "IO", "dry_run", args.dry_run)
     config.write(conf)
     logger.info("Done")
 
