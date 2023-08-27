@@ -30,7 +30,16 @@ menu_about = {
     'license': 'MIT',
 }
 
-@Gooey(advanced=True, default_size=(1000, 700), program_name="Stackfinder GUI", menu=[{'name': 'Help', 'items': [menu_about]}])
+# https://stackoverflow.com/questions/58470789/merging-py-file-and-txt-files-into-exe-file-using-pyinstaller/58474133#58474133
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+@Gooey(advanced=True, default_size=(1000, 700), program_name="Stackfinder GUI", menu=[{'name': 'Help', 'items': [menu_about]}], image_dir=resource_path('icons'))
 def main():
     logger.info("Stackfinder GUI started.")
     conf = config.read()
