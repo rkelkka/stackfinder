@@ -21,7 +21,7 @@ def main():
     output_dir = conf.get("IO", "output_dir", fallback=input_dir)
 
     # Convert a string that looks like a list into a real list
-    file_extensions = ast.literal_eval(conf.get("IO", "file_extensions", fallback=[".cr3"]))
+    file_extensions = ast.literal_eval(conf.get("IO", "file_extensions", fallback="['.cr3']"))
     threshold = conf.getfloat("FOCUS_STACK", "timestamp_threshold_sec", fallback=0.5)
     continuous_drive = conf.getint("FOCUS_STACK", "continuous_drive", fallback=0)
     min_stack_size = conf.getint("FOCUS_STACK", "min_stack_size", fallback=2)
