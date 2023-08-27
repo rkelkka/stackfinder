@@ -12,6 +12,7 @@ logger = logging.getLogger('main')
 
 @Gooey(advanced=True, default_size=(1000, 700))
 def main():
+    logger.info("Stackfinder GUI started.")
     conf = config.read()
 
     input_dir = conf.get("IO", "input_dir", fallback=os.getcwd())
@@ -44,8 +45,8 @@ def main():
     parser.add_argument("--dry-run", metavar="Dry run", action="store_true", widget="CheckBox", gooey_options={'initial_value': dry_run})
 
     args = parser.parse_args()
-    logger.debug("XMP WRITE %s, is it string %s", write_xmp, isinstance(write_xmp, str))
-    logger.debug("ARGS XMP WRITE %s", args.write_xmp)
+    for arg, value in vars(args).items():
+        logging.info("  Argument %s: %r", arg, value)
     input_dir = os.path.abspath(args.input)
     if (args.output is None):
         output_dir = input_dir
