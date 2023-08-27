@@ -10,7 +10,27 @@ import ast
 
 logger = logging.getLogger('main')
 
-@Gooey(advanced=True, default_size=(1000, 700))
+about_desc = """Finds images which form a focus stack / bracking series and copies each stack to ouput directories.
+
+Based on
+ - PyExifTool - A Python wrapper for Phil Harvey's ExifTool (https://smarnach.github.io/pyexiftool/)
+ - ExifTool by Phil Harvey (https://exiftool.org/)
+ - Icon by <a href="https://freeicons.io/profile/5790">ColourCreatype</a> on <a href="https://freeicons.io">freeicons.io</a>
+"""
+
+menu_about = {
+    'type': 'AboutDialog',
+    'menuTitle': 'About',
+    'name': 'Stackfinder GUI',
+    'description': about_desc,
+    'version': '0.0.1',
+    'copyright': '2023',
+    'website': 'https://github.com/rkelkka/stackfinder',
+    'developer': 'https://github.com/rkelkka',
+    'license': 'MIT',
+}
+
+@Gooey(advanced=True, default_size=(1000, 700), program_name="Stackfinder GUI", menu=[{'name': 'Help', 'items': [menu_about]}])
 def main():
     logger.info("Stackfinder GUI started.")
     conf = config.read()
