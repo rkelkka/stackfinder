@@ -10,9 +10,14 @@ from pyexif_wrapper import read_metadatas, write_tags
 from cr3_exif import get_file_name
 
 FORMAT = '[%(asctime)s.%(msecs)03d] %(levelname)8s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=FORMAT, handlers=[
-        logging.FileHandler("stackfinder.log"),
-        logging.StreamHandler()
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+
+file_handler = logging.FileHandler("stackfinder.log")
+file_handler.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, format=FORMAT, handlers=[
+        stream_handler,
+        file_handler
     ])
 logger = logging.getLogger('main')
 
