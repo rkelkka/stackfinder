@@ -1,7 +1,7 @@
 Groups series of images taken with Canon's focus bracketing function into distinct folders to help stacking and / or post-process the images. Supports Canon CR3 files.
 
 # Based on
- - PyExifTool - A Python wrapper for Phil Harvey's ExifTool (https://smarnach.github.io/pyexiftool/)
+ - PyExifTool - A Python wrapper for Phil Harvey's ExifTool (https://github.com/sylikc/pyexiftool)
  - ExifTool by Phil Harvey (https://exiftool.org/)
  
 # Dev Requirements
