@@ -74,7 +74,7 @@ def read_files(input_files, flag_disable_cache):
     logger.info("Reading files...")
     metadatas = []
     if (flag_disable_cache):
-        logger.warning("Cache disabled - reading metadatas may take several seconds.")
+        logger.warning("Cache disabled - reading metadatas may take several seconds or minutes.")
         metadatas = read_metadatas(input_files)
     else:
         metadatas = with_cache(input_files, read_metadatas)
