@@ -27,7 +27,7 @@ menu_about = {
     'copyright': '2023',
     'website': 'https://github.com/rkelkka/stackfinder',
     'developer': 'https://github.com/rkelkka',
-    'license': 'MIT',
+    'license': 'GPLv3',
 }
 
 # https://stackoverflow.com/questions/58470789/merging-py-file-and-txt-files-into-exe-file-using-pyinstaller/58474133#58474133
