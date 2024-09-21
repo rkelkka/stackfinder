@@ -8,7 +8,7 @@ Groups series of images taken with Canon's focus bracketing function into distin
 Don't know yet how to properly define requirements for a python project.
 Here's a summary what I did on dev machine:
  - pip install pyexiftool
- - Python 3.6+ (min. for PyExifTool)
+ - Python 3.10+ (3.6 or above for PyExifTool, 3.10.0 or above for match)
  - GUI (https://github.com/chriskiehl/Gooey):
     - Gooey requires wxPython. Here it is installed from pre-compiled package (for Ubuntu):
    ```

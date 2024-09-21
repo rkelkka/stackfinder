@@ -39,6 +39,15 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+def _file_action_initial_selection(file_action):
+    match file_action:
+            case "none":
+                return 0
+            case "copy":
+                return 1
+            case "move":
+                return 2
+
 @Gooey(advanced=True, default_size=(1000, 700), program_name="Stackfinder GUI", menu=[{'name': 'Help', 'items': [menu_about]}], image_dir=resource_path('icons'))
 def main():
     logger.info("Stackfinder GUI started.")
@@ -57,7 +66,7 @@ def main():
     continuous_drive = conf.getint("FOCUS_STACK", "continuous_drive", fallback=0)
     min_stack_size = conf.getint("FOCUS_STACK", "min_stack_size", fallback=2)
     write_xmp = conf.getboolean("IO","write_xmp", fallback=True)
-    copy_stacks = conf.getboolean("IO","copy_stacks", fallback=True)
+    file_action = conf.get("IO","file_action", fallback="none")
     disable_cache = conf.getboolean("IO","disable_cache", fallback=False)
     dry_run = conf.getboolean("IO","dry_run", fallback=False)
 
@@ -70,7 +79,15 @@ def main():
     parser.add_argument("--continuous-drive", metavar="MakerNotes.ContinuousDrive", default=continuous_drive, widget="Dropdown", choices=['0', '1', '2', '3', '4', '5'])
     parser.add_argument("--min-stack-size", metavar="Min stack size", default=min_stack_size, widget="IntegerField")
     parser.add_argument("--write-xmp", metavar="Write stack info to XMP sidecars", action="store_true", widget="CheckBox", gooey_options={'initial_value': write_xmp})
-    parser.add_argument("--copy-stacks", metavar="Copy stacks to output dir", action="store_true", widget="CheckBox", gooey_options={'initial_value': copy_stacks})
+    file_action = parser.add_mutually_exclusive_group(gooey_options={
+        # Pre-select a specific option within a mutually exclusive group.
+        # default behavior is to have all options unselected by default.
+        'initial_selection': _file_action_initial_selection(file_action),
+        'title': "Choose file action"
+    })
+    file_action.add_argument("--file-action-none", action="store_const", dest="file_action", const="none", metavar="None", help="Do not copy or move files")
+    file_action.add_argument("--copy-stacks", action="store_const", dest="file_action", const="copy", metavar="Copy", help="Copy stacks to output dir")
+    file_action.add_argument("--move-stacks", action="store_const", dest="file_action", const="move", metavar="Move", help="Move stacks to output dir")
     parser.add_argument("--disable-cache", metavar="Disable cache, slower", action="store_true", widget="CheckBox", gooey_options={'initial_value': disable_cache})
     parser.add_argument("--dry-run", metavar="Dry run", action="store_true", widget="CheckBox", gooey_options={'initial_value': dry_run})
 
@@ -93,7 +110,7 @@ def main():
     if (len(input_files) == 0):
         logger.warning("No input files found in %s", input_dir)
     else:
-        execute(input_files, output_dir, args.threshold, args.continuous_drive, args.min_stack_size, args.disable_cache, args.write_xmp, args.copy_stacks, args.dry_run)
+        execute(input_files, output_dir, args.threshold, args.continuous_drive, args.min_stack_size, args.disable_cache, args.write_xmp, args.file_action, args.dry_run)
 
     config.set_val(conf, "IO", "input_dir", input_dir)
     config.set_val(conf, "IO", "output_dir", args.output) # store output_dir only when explicitly supplied
@@ -102,7 +119,7 @@ def main():
     config.set_val(conf, "FOCUS_STACK", "continuous_drive", args.continuous_drive)
     config.set_val(conf, "FOCUS_STACK", "min_stack_size", args.min_stack_size)
     config.set_val(conf, "IO", "write_xmp", args.write_xmp)
-    config.set_val(conf, "IO", "copy_stacks", args.copy_stacks)
+    config.set_val(conf, "IO", "file_action", args.file_action)
     config.set_val(conf, "IO", "disable_cache", args.disable_cache)
     config.set_val(conf, "IO", "dry_run", args.dry_run)
     config.write(conf)

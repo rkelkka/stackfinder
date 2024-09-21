@@ -4,7 +4,7 @@ import logging
 import argparse
 import focus_stack
 import config
-from io_util import get_file_list, copy_stack, with_xmp_extension
+from io_util import get_file_list, do_file_action_on_stack, with_xmp_extension
 from cache import with_cache
 from pyexif_wrapper import read_metadatas, write_tags
 from cr3_exif import get_file_name
@@ -55,7 +55,7 @@ def main():
 
     execute(input_files, output_dir, args.threshold, args.continuous_drive, args.min_stack_size, args.disable_cache, args.write_xmp, args.copy_stacks, args.dry_run)
 
-def execute(input_files, output_dir, threshold_sec, continuous_drive, min_stack_size, flag_disable_cache, flag_write_xmp, flag_copy_stacks, flag_dry_run):
+def execute(input_files, output_dir, threshold_sec, continuous_drive, min_stack_size, flag_disable_cache, flag_write_xmp, flag_file_action, flag_dry_run):
     if (len(input_files) == 0):
         logger.warning("No input files")
         return
@@ -66,9 +66,9 @@ def execute(input_files, output_dir, threshold_sec, continuous_drive, min_stack_
     verify_evs(stacks)
     if flag_write_xmp:
         write_xmp(input_files, stacks, flag_dry_run)
-    if flag_copy_stacks:
+    if flag_file_action == "copy" or flag_file_action == "move":
         include_xmp_sidecars = flag_write_xmp
-        copy_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_dry_run)
+        copy_move_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_file_action, flag_dry_run)
 
 def read_files(input_files, flag_disable_cache):
     logger.info("Reading files...")
@@ -100,14 +100,21 @@ def write_xmp(input_files, stacks, flag_dry_run):
             logger.debug("(dry-run) Writing tags %s to files %s", tags_list, len(xmp_files))
     logger.info("Writing XMP tags...done")
 
-def copy_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_dry_run):
-    logger.info("Copy stacks to %s...", output_dir)
+def _file_action_str(flag_file_action):
+    match flag_file_action:
+        case "copy":
+            return "Copy"
+        case "move":
+            return "Move"
+
+def copy_move_stacks(input_files, output_dir, stacks, include_xmp_sidecars, flag_file_action, flag_dry_run):
+    logger.info("%(action)s stacks to %(dest)s...", {"action": _file_action_str(flag_file_action), "dest": output_dir})
     def get_abs_file_path_for_stack_item_internal(metadata) :
         return get_abs_file_path_for_stack_item(input_files, metadata)
 
     for s in stacks:
-        copy_stack(s, get_abs_file_path_for_stack_item_internal, focus_stack.get_stack_label, output_dir, include_xmp_sidecars, flag_dry_run)
-    logger.info("Copy stacks...done")
+        do_file_action_on_stack(s, get_abs_file_path_for_stack_item_internal, focus_stack.get_stack_label, output_dir, flag_file_action, include_xmp_sidecars, flag_dry_run)
+    logger.info("%s stacks...done", _file_action_str(flag_file_action))
 
 def get_abs_file_path_for_stack_item(input_files, metadata):
         files = [f for f in input_files if get_file_name(metadata) in f]
