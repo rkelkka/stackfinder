@@ -6,7 +6,7 @@ gooey_root = os.path.dirname(gooey.__file__)
 block_cipher = None
 
 # NOTE TO SELF. Usage with pyinstaller >5.0:
-# rename this file to build-win.spec (not sure of necessary though)
+# rename this file to build-win.spec (not sure if necessary though)
 # run command at the root of the repo: pyinstaller build-win.spec
 
 a = Analysis(['stackfinder_gui.py'],  # replace me with your path

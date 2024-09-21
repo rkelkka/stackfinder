@@ -3,7 +3,7 @@ Groups series of images taken with Canon's focus bracketing function into distin
 # Based on
  - PyExifTool - A Python wrapper for Phil Harvey's ExifTool (https://github.com/sylikc/pyexiftool)
  - ExifTool by Phil Harvey (https://exiftool.org/)
- 
+
 # Dev Requirements
 Don't know yet how to properly define requirements for a python project.
 Here's a summary what I did on dev machine:
@@ -16,7 +16,7 @@ Here's a summary what I did on dev machine:
    pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
    pip install Gooey
    ```
- - For running the probram, ExifTool(.exe) placed on working directory or PATH
+ - For running the program, ExifTool(.exe) must be placed on working directory or PATH
 
 
 # Installer
